@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local virtual environments
+.venv/
+venv/
+
+# Local secrets / environment overrides
+.env
+.env.*
+!.env.example
+
+# Runtime SQLite state
+data/*.db
+data/*.db-shm
+data/*.db-wal
