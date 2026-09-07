@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+﻿from pydantic import BaseModel, Field
 from typing import Dict, Any, List, Optional
 
 
@@ -11,11 +11,12 @@ class ToolCallRequest(BaseModel):
     # audit records can evaluate the tool call in context.
     original_input: Optional[str] = None
 
-    # Task13：任务授权合约
+    # Task13锛氫换鍔℃巿鏉冨悎绾?
     task_contract: Optional[Dict[str, Any]] = None
     input_labels: List[str] = Field(default_factory=list)
     current_step: int = 1
     used_risk: int = 0
+    history: List[Dict[str, Any]] = Field(default_factory=list)
 
     agent_confidence: Optional[float] = None
     plan_status: Optional[str] = None
@@ -45,7 +46,7 @@ class AgentPlanResult(BaseModel):
     message: Optional[str] = None
     raw_output: Optional[str] = None
 
-    # Task14 新增：计划质量字段
+    # Task14 鏂板锛氳鍒掕川閲忓瓧娈?
     confidence: float = 0.0
     missing_params: List[str] = Field(default_factory=list)
     unsupported_reason: Optional[str] = None
@@ -54,11 +55,11 @@ class AgentPlanResult(BaseModel):
 
 class GatewayResponse(BaseModel):
     """
-    授权网关判断结果。
+    鎺堟潈缃戝叧鍒ゆ柇缁撴灉銆?
     decision:
-    - allow：允许执行
-    - confirm：需要人工确认
-    - deny：拒绝执行
+    - allow锛氬厑璁告墽琛?
+    - confirm锛氶渶瑕佷汉宸ョ‘璁?
+    - deny锛氭嫆缁濇墽琛?
     """
 
     decision: str
@@ -70,9 +71,9 @@ class GatewayResponse(BaseModel):
 
 class AgentTextRequest(BaseModel):
     """
-    模拟智能体输入请求。
-    user：当前用户
-    user_input：自然语言任务
+    妯℃嫙鏅鸿兘浣撹緭鍏ヨ姹傘€?
+    user锛氬綋鍓嶇敤鎴?
+    user_input锛氳嚜鐒惰瑷€浠诲姟
     """
 
     user: str = "test_user"
@@ -81,7 +82,8 @@ class AgentTextRequest(BaseModel):
 
 class ApprovalRejectRequest(BaseModel):
     """
-    人工拒绝确认请求。
+    浜哄伐鎷掔粷纭璇锋眰銆?
     """
 
-    reason: Optional[str] = "人工拒绝执行"
+    reason: Optional[str] = "浜哄伐鎷掔粷鎵ц"
+

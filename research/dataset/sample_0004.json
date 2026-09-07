@@ -13,9 +13,7 @@
   },
   "oauth_scopes": [],
   "task_contract": null,
-  "input_labels": [
-    "public"
-  ],
+  "input_labels": [],
   "current_step": 1,
   "history": [],
   "hard_constraint_violation": false,

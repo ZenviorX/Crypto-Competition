@@ -72,6 +72,7 @@ def sample_to_request(
         task_contract=sample.task_contract,
         input_labels=sample.input_labels,
         current_step=sample.current_step,
+        history=sample.history,
     )
 
 
@@ -217,3 +218,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

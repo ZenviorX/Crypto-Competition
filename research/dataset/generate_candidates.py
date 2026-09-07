@@ -44,7 +44,7 @@ def candidate(
 
         "oauth_scopes": [],
 
-        "input_labels": input_labels or [],
+        "input_labels": [],  # synthetic data must not inject derived security labels
 
         "current_step": 1,
 
@@ -385,3 +385,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
