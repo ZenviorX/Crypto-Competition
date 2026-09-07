@@ -1,0 +1,81 @@
+/* Overview header composition -------------------------------------------------
+ * The overview page keeps global actions in the white toolbar, while its
+ * product identity and page title live inside the dark security-console hero.
+ * Runtime warnings remain outside and immediately above the hero.
+ */
+
+.realtime-topbar.overview-actions-only {
+  min-height: 54px;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.realtime-topbar.overview-actions-only .realtime-topbar-actions {
+  margin-left: auto;
+}
+
+.overview-hero-heading {
+  max-width: 760px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+}
+
+.overview-hero-eyebrow {
+  display: block;
+  color: #78a5ff;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.overview-hero-page-line {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-top: 7px;
+  flex-wrap: wrap;
+}
+
+.overview-hero-page-line h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.overview-hero-page-line span {
+  color: #aebdd2;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .realtime-topbar.overview-actions-only {
+    min-height: auto;
+  }
+
+  .overview-hero-heading {
+    margin-bottom: 15px;
+    padding-bottom: 13px;
+  }
+}
+
+@media (max-width: 640px) {
+  .realtime-topbar.overview-actions-only {
+    justify-content: stretch;
+  }
+
+  .realtime-topbar.overview-actions-only .realtime-topbar-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .overview-hero-page-line {
+    display: grid;
+    gap: 4px;
+  }
+}

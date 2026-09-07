@@ -1,0 +1,444 @@
+import { useEffect, useState } from 'react';
+import { Badge } from '../components/Badge';
+import { Section } from '../components/Section';
+
+type ResearchCase = {
+  id: string;
+  scenario: string;
+  is_risky: boolean;
+  noguard: string;
+  oauth_only: string;
+  agentguard: string;
+  research_value: string;
+  summary: string;
+};
+
+export type ResearchReport = {
+  name: string;
+  generated_at?: string;
+  total_cases: number;
+  risky_cases: number;
+  metrics: {
+    noguard_unsafe_allow_rate: number;
+    oauth_only_unsafe_allow_rate: number;
+    agentguard_unsafe_allow_rate: number;
+  };
+  cases: ResearchCase[];
+};
+
+type LatestResearchResponse = {
+  available: boolean;
+  report?: ResearchReport;
+  message?: string;
+};
+
+function percent(value: number) {
+  return `${(value * 100).toFixed(0)}%`;
+}
+
+const scenarioNames: Record<string, string> = {
+  normal_public_read: '公开文件正常读取',
+  scope_missing_email: 'OAuth 权限不足',
+  scope_enough_but_sandbox_denies: '有权限但外部发送受限',
+  scope_enough_but_no_shell_sandbox_denies: '有权限但禁止命令执行',
+  scope_enough_but_readonly_sandbox_denies: '有权限但只读任务禁止写入',
+  scope_enough_but_strict_sandbox_denies_http: '有权限但外部网络受限',
+  scope_enough_but_task_boundary_denies: '有权限但违反任务边界',
+  scope_enough_but_untrusted_input_drives_email_denies: '提示注入诱导外发'
+};
+
+const researchValueNames: Record<string, string> = {
+  high: '核心差异',
+  medium: '基础防护',
+  normal: '正常行为'
+};
+
+/*
+ * Vite 开发环境通常运行在 :5173，
+ * FastAPI Backend 运行在 :8000。
+ *
+ * 如果配置了 VITE_API_BASE 则优先使用配置；
+ * 否则在开发环境直接指向同一主机的 8000。
+ * 生产环境由同源 /research 路由处理。
+ */
+function buildResearchUrl(endpoint: string) {
+  const configured = String(
+    import.meta.env.VITE_API_BASE ?? ''
+  ).replace(/\/$/, '');
+
+  if (configured) {
+    return `${configured}${endpoint}`;
+  }
+
+  if (window.location.port === '5173') {
+    return (
+      `${window.location.protocol}//` +
+      `${window.location.hostname}:8000${endpoint}`
+    );
+  }
+
+  return endpoint;
+}
+
+function decisionLabel(value: string) {
+  const normalized = value.toLowerCase();
+
+  if (normalized === 'allow') return 'ALLOW';
+  if (normalized === 'deny') return 'DENY';
+  if (normalized === 'confirm') return 'CONFIRM';
+
+  return value.toUpperCase();
+}
+
+export function ResearchComparisonPage({
+  onReportChange
+}: {
+  onReportChange?: (report: ResearchReport | null) => void;
+}) {
+  const [report, setReport] = useState<ResearchReport | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [loadingLatest, setLoadingLatest] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  /*
+   * 页面打开时读取上一轮结果。
+   * 因此切换页面以后不会重新变回 0 条。
+   */
+  useEffect(() => {
+    let active = true;
+
+    async function loadLatest() {
+      setLoadingLatest(true);
+
+      try {
+        const res = await fetch(
+          buildResearchUrl(
+            '/research/strategy-comparison/latest'
+          ),
+          {
+            headers: {
+              Accept: 'application/json'
+            }
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error(
+            `读取策略对比结果失败（HTTP ${res.status}）`
+          );
+        }
+
+        const data = (
+          await res.json()
+        ) as LatestResearchResponse;
+
+        if (
+          active &&
+          data.available &&
+          data.report
+        ) {
+          setReport(data.report);
+          onReportChange?.(data.report);
+        }
+      } catch (reason) {
+        /*
+         * 没有旧结果不影响页面使用。
+         * 真正点击运行时会显示明确错误。
+         */
+        console.debug(
+          'No previous research comparison result.',
+          reason
+        );
+      } finally {
+        if (active) {
+          setLoadingLatest(false);
+        }
+      }
+    }
+
+    void loadLatest();
+
+    return () => {
+      active = false;
+    };
+  }, [onReportChange]);
+
+  async function runComparison() {
+    if (loading) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch(
+        buildResearchUrl(
+          '/research/strategy-comparison/run'
+        ),
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          }
+        }
+      );
+
+      const contentType =
+        res.headers.get('content-type') || '';
+
+      const payload = contentType.includes(
+        'application/json'
+      )
+        ? await res.json()
+        : {
+            detail: await res.text()
+          };
+
+      if (!res.ok) {
+        const detail =
+          typeof payload?.detail === 'string'
+            ? payload.detail
+            : typeof payload?.message === 'string'
+              ? payload.message
+              : `HTTP ${res.status}`;
+
+        throw new Error(detail);
+      }
+
+      const nextReport = payload as ResearchReport;
+
+      if (
+        typeof nextReport.total_cases !== 'number' ||
+        !nextReport.metrics ||
+        !Array.isArray(nextReport.cases)
+      ) {
+        throw new Error(
+          '后端返回的策略对比结果格式不完整。'
+        );
+      }
+
+      setReport(nextReport);
+      onReportChange?.(nextReport);
+    } catch (reason) {
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : '策略对比实验运行失败。'
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="page-grid">
+      <section className="workbench-hero">
+        <div>
+          <span className="eyebrow">
+            Research Comparison
+          </span>
+
+          <h1>授权策略对比实验</h1>
+
+          <p>
+            对比无防护、仅 OAuth 授权与 AgentGuard
+            三种方案，观察任务边界、参数风险和运行时控制
+            对工具调用安全性的影响。
+          </p>
+        </div>
+
+        <div className="flow-strip">
+          <span>NoGuard</span>
+          <b>vs</b>
+          <span>OAuth-only</span>
+          <b>vs</b>
+          <span>AgentGuard</span>
+        </div>
+      </section>
+
+      <Section
+        eyebrow="Core Difference"
+        title="三种方案的差异"
+        description="从工具资格、任务边界和执行阶段三个层次比较不同授权策略。"
+        actions={
+          <button
+            className="primary-btn small"
+            onClick={() => void runComparison()}
+            disabled={loading}
+          >
+            {loading
+              ? '实验运行中…'
+              : '运行对比实验'}
+          </button>
+        }
+      >
+        <div className="matrix-grid">
+          <div>
+            <strong>NoGuard</strong>
+            <span>
+              Agent 提出工具调用后直接执行，没有任务边界、
+              参数风险和审计证据。
+            </span>
+          </div>
+
+          <div>
+            <strong>OAuth-only</strong>
+            <span>
+              判断 Agent 是否拥有对应 scope，
+              但无法判断本次调用是否符合当前任务。
+            </span>
+          </div>
+
+          <div>
+            <strong>AgentGuard</strong>
+            <span>
+              将 scope、任务、参数、运行时、沙箱和审计
+              绑定到每一次工具调用。
+            </span>
+          </div>
+        </div>
+      </Section>
+
+      {error && (
+        <div className="runtime-warning">
+          <strong>对比实验运行失败</strong>
+          <span>{error}</span>
+        </div>
+      )}
+
+      {!report && loadingLatest && (
+        <div className="empty-live-state">
+          正在读取策略对比结果…
+        </div>
+      )}
+
+      {report && (
+        <>
+          <div className="verdict-grid">
+            <div>
+              <span>NoGuard 风险误放行率</span>
+              <strong>
+                {percent(
+                  report.metrics
+                    .noguard_unsafe_allow_rate
+                )}
+              </strong>
+            </div>
+
+            <div>
+              <span>OAuth-only 风险误放行率</span>
+              <strong>
+                {percent(
+                  report.metrics
+                    .oauth_only_unsafe_allow_rate
+                )}
+              </strong>
+            </div>
+
+            <div>
+              <span>AgentGuard 风险误放行率</span>
+              <strong>
+                {percent(
+                  report.metrics
+                    .agentguard_unsafe_allow_rate
+                )}
+              </strong>
+            </div>
+          </div>
+
+          <Section
+            eyebrow="Research Cases"
+            title="横向对比样例"
+            description={
+              `本轮共 ${report.total_cases} 条样例，` +
+              `其中风险样例 ${report.risky_cases} 条。`
+            }
+          >
+            <div className="pipeline-card">
+              <table>
+                <thead>
+                  <tr>
+                    <th>编号</th>
+                    <th>场景</th>
+                    <th>NoGuard</th>
+                    <th>OAuth-only</th>
+                    <th>AgentGuard</th>
+                    <th>对比意义</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {report.cases.map((item) => (
+                    <tr key={item.id}>
+                      <td>
+                        {item.id
+                          .replace('case_', '')
+                          .split('_')[0]}
+                      </td>
+
+                      <td>
+                        {scenarioNames[item.scenario]
+                          ?? item.scenario}
+                      </td>
+
+                      <td>
+                        <Badge
+                          tone={
+                            item.noguard === 'allow' &&
+                            item.is_risky
+                              ? 'red'
+                              : 'green'
+                          }
+                        >
+                          {decisionLabel(item.noguard)}
+                        </Badge>
+                      </td>
+
+                      <td>
+                        <Badge
+                          tone={
+                            item.oauth_only === 'allow' &&
+                            item.is_risky
+                              ? 'red'
+                              : 'green'
+                          }
+                        >
+                          {decisionLabel(
+                            item.oauth_only
+                          )}
+                        </Badge>
+                      </td>
+
+                      <td>
+                        <Badge
+                          tone={
+                            item.agentguard === 'deny'
+                              ? 'green'
+                              : item.agentguard ===
+                                  'confirm'
+                                ? 'yellow'
+                                : 'green'
+                          }
+                        >
+                          {decisionLabel(
+                            item.agentguard
+                          )}
+                        </Badge>
+                      </td>
+
+                      <td>
+                        {researchValueNames[
+                          item.research_value
+                        ] ?? item.research_value}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Section>
+        </>
+      )}
+    </div>
+  );
+}

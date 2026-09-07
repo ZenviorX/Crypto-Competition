@@ -1,0 +1,172 @@
+.page-status-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: start;
+  margin-bottom: 18px;
+  padding: 21px 23px;
+  border: 1px solid #dbe3f6;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 88% 16%, rgba(91, 124, 250, 0.09), transparent 34%),
+    linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+  box-shadow: 0 8px 26px rgba(30, 41, 59, 0.05);
+}
+
+.page-status-copy h2 {
+  margin: 6px 0 0;
+  color: var(--text);
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+
+.page-status-copy p {
+  max-width: 720px;
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.page-status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  max-width: 760px;
+}
+
+.page-status-refresh {
+  min-height: 35px;
+  padding: 0 12px;
+  color: #374151;
+  border: 1px solid #d7dce7;
+  border-radius: 11px;
+  background: #ffffff;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.page-status-refresh:hover {
+  border-color: #c5cede;
+  background: #f9fafb;
+}
+
+.page-status-pill {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    "dot label"
+    "dot value";
+  column-gap: 8px;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 1px solid #dbe4ff;
+  border-radius: 12px;
+  background: #f7f9ff;
+  white-space: nowrap;
+}
+
+.page-status-pill-dot {
+  grid-area: dot;
+  align-self: center;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.page-status-pill span:not(.page-status-pill-dot) {
+  grid-area: label;
+  color: #737b8c;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.page-status-pill strong {
+  grid-area: value;
+  color: inherit;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.page-status-pill.tone-blue {
+  color: #4e67c8;
+  border-color: #d7e0ff;
+  background: #f4f7ff;
+}
+
+.page-status-pill.tone-purple {
+  color: #7059c2;
+  border-color: #e1d9ff;
+  background: #f5f2ff;
+}
+
+.page-status-pill.tone-green {
+  color: #21775f;
+  border-color: #d0ebdf;
+  background: #eef8f5;
+}
+
+.page-status-pill.tone-yellow {
+  color: #99631a;
+  border-color: #f0dfbd;
+  background: #fff7eb;
+}
+
+.page-status-pill.tone-red {
+  color: #a13d44;
+  border-color: #efcfd2;
+  background: #fff1f2;
+}
+
+.page-status-pill.tone-gray {
+  color: #5f6673;
+  border-color: #e0e3e8;
+  background: #f7f8fa;
+}
+
+/* Each page now uses the shared status banner above its business content. */
+.authentication-hero,
+.overview-hero,
+.workbench-hero,
+.evidence-hero,
+.evaluation-hero {
+  display: none !important;
+}
+
+.authentication-page,
+.overview-page,
+.page-grid,
+.clean-page-grid {
+  margin-top: 0;
+}
+
+@media (max-width: 1180px) {
+  .page-status-banner {
+    grid-template-columns: 1fr;
+  }
+
+  .page-status-actions {
+    justify-content: flex-start;
+    max-width: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .page-status-banner {
+    padding: 17px;
+  }
+
+  .page-status-actions,
+  .page-status-refresh,
+  .page-status-pill {
+    width: 100%;
+  }
+
+  .page-status-pill {
+    white-space: normal;
+  }
+}

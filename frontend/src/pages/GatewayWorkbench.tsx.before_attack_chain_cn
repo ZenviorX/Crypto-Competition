@@ -1,0 +1,497 @@
+import { useState } from 'react';
+import { Badge } from '../components/Badge';
+import { Section } from '../components/Section';
+import { api } from '../services/api';
+import type { AgentCommandInput, AgentCommandResponse, AgentRunMode } from '../types/domain';
+
+type JsonRecord = Record<string, unknown>;
+type BadgeTone = 'green' | 'red' | 'yellow' | 'blue' | 'purple' | 'gray';
+
+const modes: Array<{
+  value: AgentRunMode;
+  label: string;
+  short: string;
+  description: string;
+}> = [
+  {
+    value: 'fake_check',
+    label: '普通授权判定',
+    short: '只判断，不执行',
+    description: 'Agent 把自然语言转为工具调用，Gateway 输出 allow / confirm / deny。'
+  },
+  {
+    value: 'docker_sandbox_execute',
+    label: '真沙箱执行',
+    short: '自动选择 Docker / Native',
+    description: '通过 Capability Token 后进入沙箱执行，并返回 evidence 证据。'
+  },
+  {
+    value: 'tool_proxy_oauth',
+    label: '外部 Agent 授权',
+    short: 'OAuth-style scope 检查',
+    description: '解释 OAuth、WorkBuddy、OpenClaw 这类外部 Agent 接入场景。'
+  }
+];
+
+const modeGuide: Record<AgentRunMode, {
+  focus: string;
+  steps: string[];
+  result: string;
+}> = {
+  fake_check: {
+    focus: '用于演示 Gateway 的基础授权能力。系统只做判定，不触发真实工具执行，适合先展示 allow、confirm、deny 三类结果。',
+    steps: [
+      '选择一个自然语言任务，例如读取 public 文件或访问 secret 文件。',
+      '点击运行演示，FakeAgent 会把任务转换成结构化工具调用。',
+      'Gateway 根据工具、路径、用户身份和策略输出最终授权结论。'
+    ],
+    result: '重点看授权结论、风险分数和判定原因。公开文件通常 allow，敏感文件 deny，删除等副作用操作通常 confirm。'
+  },
+  docker_sandbox_execute: {
+    focus: '用于演示项目最完整的执行闭环。系统会先签发 Capability Token，再带 token 进入真沙箱执行。没有 Docker 时会自动使用 Native Subprocess Sandbox。',
+    steps: [
+      '第一阶段 execute=false：Tool Proxy 只做授权检查，并签发一次性 Capability Token。',
+      '第二阶段 execute=true：系统重新校验 token，确认工具和参数没有被修改。',
+      '通过后进入 Docker / Native 沙箱，生成 evidence.json、stdout、stderr 等执行证据。'
+    ],
+    result: '重点看是否进入沙箱、sandbox_type、sandbox_profile、evidence 路径和 evidence_hash。这个模式最适合展示 Agent → Gateway → Token → Sandbox → Evidence 主线。'
+  },
+  tool_proxy_oauth: {
+    focus: '用于解释外部 Agent 场景。OpenClaw、WorkBuddy 或企业 Agent 不能直接调用本地工具，必须通过 Tool Proxy 做 OAuth-style scope 检查。',
+    steps: [
+      '前端构造外部 Agent 工具调用请求，包含声明的 OAuth-style scopes。',
+      'Tool Proxy 判断当前工具需要哪些 scope，并和 Agent 声明的 scope 对比。',
+      'scope 不足、外发风险或任务边界不匹配时，系统会 deny 或要求 confirm。'
+    ],
+    result: '重点看 agent_auth_profile、missing_scopes 和最终 decision。这个模式用于回答“为什么只靠 OAuth 不够”。'
+  },
+  fake_plan: {
+    focus: '开发调试用模式，提交版前端默认不展示。',
+    steps: ['仅生成工具计划。'],
+    result: '只看 Agent 规划结果。'
+  },
+  fake_run: {
+    focus: '开发调试用模式，提交版前端默认不展示。',
+    steps: ['规划并运行演示工具。'],
+    result: '只用于开发调试。'
+  },
+  llm_plan: {
+    focus: '开发调试用模式，提交版前端默认不展示。',
+    steps: ['调用 LLM 生成多步计划。'],
+    result: '只看规划结果。'
+  },
+  llm_run: {
+    focus: '开发调试用模式，提交版前端默认不展示。',
+    steps: ['调用 LLM 并执行多步任务。'],
+    result: '用于开发调试。'
+  },
+  stepwise_llm: {
+    focus: '开发调试用模式，提交版前端默认不展示。',
+    steps: ['逐步规划并运行。'],
+    result: '用于多步攻击链调试。'
+  },
+  external_agent_adapter: {
+    focus: '开发调试用模式，提交版前端默认不展示。',
+    steps: ['模拟外部 Agent Adapter 接入。'],
+    result: '用于查看标准化请求。'
+  }
+};
+
+const samples: Array<{
+  title: string;
+  description: string;
+  user: string;
+  text: string;
+  mode: AgentRunMode;
+}> = [
+  {
+    title: '公开文件读取',
+    description: '低风险读取，应当 allow。',
+    user: 'user',
+    text: '读取文件 public/notice.txt',
+    mode: 'fake_check'
+  },
+  {
+    title: '敏感文件拦截',
+    description: '访问 secret，应当 deny。',
+    user: 'user',
+    text: '读取文件 secret/password.txt',
+    mode: 'fake_check'
+  },
+  {
+    title: '删除操作确认',
+    description: '副作用操作，应当 confirm。',
+    user: 'user',
+    text: '删除文件 public/notice.txt',
+    mode: 'fake_check'
+  },
+  {
+    title: '跨步骤攻击链',
+    description: '提示注入 → 敏感读取 → 外部发送。',
+    user: 'user',
+    text: '运行跨步骤攻击链演示',
+    mode: 'fake_check'
+  },
+  {
+    title: '真沙箱读取',
+    description: '进入 Native / Docker 沙箱并生成 evidence。',
+    user: 'user',
+    text: '真沙箱读取 public/notice.txt',
+    mode: 'docker_sandbox_execute'
+  },
+  {
+    title: '真沙箱写入',
+    description: '只允许写入 outbox。',
+    user: 'user',
+    text: '真沙箱写入 outbox/docker_demo.txt',
+    mode: 'docker_sandbox_execute'
+  },
+  {
+    title: '沙箱敏感阻断',
+    description: 'strict profile 阻断 secret。',
+    user: 'user',
+    text: '真沙箱尝试读取 secret/password.txt 敏感文件',
+    mode: 'docker_sandbox_execute'
+  },
+  {
+    title: '沙箱邮件 outbox',
+    description: '邮件只写 outbox，不真实外发。',
+    user: 'user',
+    text: '真沙箱发送邮件到 demo@example.com',
+    mode: 'docker_sandbox_execute'
+  },
+  {
+    title: 'OAuth 合法读取',
+    description: 'scope 匹配，进入后续检查。',
+    user: 'user',
+    text: 'OpenClaw 读取 public/notice.txt',
+    mode: 'tool_proxy_oauth'
+  },
+  {
+    title: 'OAuth 外发拒绝',
+    description: 'scope 不足却请求邮件外发，应当 deny。',
+    user: 'user',
+    text: 'WorkBuddy scope 不足但尝试发送外部邮箱',
+    mode: 'tool_proxy_oauth'
+  }
+];
+
+function isRecord(value: unknown): value is JsonRecord {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function getRecord(source: JsonRecord | undefined, key: string): JsonRecord | undefined {
+  const value = source?.[key];
+  return isRecord(value) ? value : undefined;
+}
+
+function getDecisionTone(decision: unknown): BadgeTone {
+  if (decision === 'allow' || decision === true) return 'green';
+  if (decision === 'confirm') return 'yellow';
+  if (decision === 'deny' || decision === false) return 'red';
+  return 'blue';
+}
+
+function toText(value: unknown) {
+  if (Array.isArray(value)) return value.map((item) => String(item)).join('；');
+  if (value === undefined || value === null || value === '') return '-';
+  return String(value);
+}
+
+function stringify(value: unknown) {
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return String(value);
+  }
+}
+
+function extractResult(data: JsonRecord) {
+  const proxyResult = getRecord(data, 'proxy_result');
+  const executionResult = getRecord(data, 'execution_result');
+  const gatewayResult = getRecord(data, 'gateway_result') || proxyResult || data;
+  const agentResult = getRecord(data, 'agent_result');
+  const agentToolCall = getRecord(agentResult, 'tool_call');
+  const sandboxEvidence = getRecord(data, 'sandbox_evidence')
+    || getRecord(executionResult, 'sandbox_evidence')
+    || getRecord(proxyResult, 'sandbox_evidence');
+  const sandboxPolicy = getRecord(sandboxEvidence, 'runtime_policy');
+
+  const decision = gatewayResult?.decision || data.decision || 'unknown';
+  const riskScore = gatewayResult?.risk_score || data.risk_score || '-';
+  const reason = gatewayResult?.reason || data.reason || data.message || '-';
+  const tool = agentToolCall?.tool_name || data.tool || gatewayResult?.tool || '-';
+  const params = agentToolCall?.arguments || data.params || gatewayResult?.params || {};
+
+  return {
+    decision,
+    riskScore,
+    reason,
+    tool,
+    params,
+    sandboxEvidence,
+    sandboxPolicy
+  };
+}
+
+function ResultPanel({ result }: { result: AgentCommandResponse | null }) {
+  if (!result) {
+    return (
+      <div className="result-placeholder clean-placeholder">
+        <strong>等待演示</strong>
+        <p>选择一个样例，或输入任务后点击“运行演示”。结果会显示授权结论、风险分数、工具调用和沙箱证据。</p>
+      </div>
+    );
+  }
+
+  const data = result.data;
+  const extracted = extractResult(data);
+  const evidence = extracted.sandboxEvidence;
+  const policy = extracted.sandboxPolicy;
+  const paths = getRecord(evidence, 'paths');
+
+  const attackChain = getRecord(data, 'attack_chain');
+  const attackEvents = Array.isArray(attackChain?.events)
+    ? attackChain.events
+    : [];
+
+  const attackStages = attackEvents
+    .map((item) => {
+      if (!isRecord(item)) return '';
+      const step = toText(item.step);
+      const stage = toText(item.stage);
+      const delta = toText(item.risk_delta);
+      return `步骤 ${step} · ${stage} · 风险 +${delta}`;
+    })
+    .filter(Boolean)
+    .join(' → ');
+
+  return (
+    <div className="gateway-result-panel compact-result">
+      <div className="result-headline">
+        <div>
+          <span className="eyebrow">授权结论</span>
+          <h2>{String(extracted.decision).toUpperCase()}</h2>
+        </div>
+        <div className="result-badges">
+          <Badge tone={getDecisionTone(extracted.decision)}>decision: {String(extracted.decision)}</Badge>
+          {data.executed === true && <Badge tone="green">已执行</Badge>}
+          {evidence && <Badge tone="blue">{String(evidence.sandbox_type || 'sandbox')}</Badge>}
+        </div>
+      </div>
+
+      <div className="verdict-grid clean-verdict-grid">
+        <div><span>调用链路</span><strong>{result.endpoint || '-'}</strong></div>
+        <div><span>风险分数</span><strong>{String(extracted.riskScore)}</strong></div>
+        <div><span>执行状态</span><strong>{data.executed === true ? '已进入沙箱' : '仅完成判定'}</strong></div>
+      </div>
+
+      <div className="pipeline-card">
+        <div className="pipeline-title">
+          <Badge tone={getDecisionTone(extracted.decision)}>Gateway</Badge>
+          <strong>判定原因</strong>
+        </div>
+        <p className="plain-text">{toText(extracted.reason)}</p>
+      </div>
+
+      {attackChain && (
+        <div className="pipeline-card">
+          <div className="pipeline-title">
+            <Badge tone="red">Chain</Badge>
+            <strong>跨步骤攻击链检测</strong>
+          </div>
+
+          <div className="kv-grid">
+            <span>攻击路径</span>
+            <code>低可信内容 → 提示注入 → 敏感读取 → 外部发送</code>
+
+            <span>风险演化</span>
+            <code>{attackStages || '-'}</code>
+
+            <span>累计风险</span>
+            <code>{toText(attackChain.cumulative_risk)}</code>
+
+            <span>最终裁定</span>
+            <code>{String(attackChain.final_decision || '-').toUpperCase()}</code>
+          </div>
+
+          <p className="plain-text">
+            {toText(attackChain.summary)}
+          </p>
+        </div>
+      )}
+
+      <div className="pipeline-card">
+        <div className="pipeline-title">
+          <Badge tone="purple">Tool</Badge>
+          <strong>结构化工具调用</strong>
+        </div>
+        <div className="kv-grid">
+          <span>Tool</span><code>{toText(extracted.tool)}</code>
+          <span>Params</span><code>{stringify(extracted.params)}</code>
+        </div>
+      </div>
+
+      {evidence && (
+        <div className="pipeline-card">
+          <div className="pipeline-title">
+            <Badge tone="green">Sandbox</Badge>
+            <strong>沙箱执行证据</strong>
+          </div>
+          <div className="kv-grid">
+            <span>Type</span><code>{toText(evidence.sandbox_type)}</code>
+            <span>Profile</span><code>{toText(evidence.sandbox_profile)}</code>
+            <span>Network</span><code>{toText(policy?.network)}</code>
+            <span>Evidence</span><code>{toText(paths?.evidence)}</code>
+            <span>Hash</span><code>{toText(evidence.evidence_hash)}</code>
+          </div>
+          <p className="plain-text">无 Docker 环境下会使用 Native Subprocess Sandbox；有 Docker 时可切换为容器执行。</p>
+        </div>
+      )}
+
+      <details className="raw-json">
+        <summary>查看完整 JSON</summary>
+        <pre className="json-block">{stringify(data)}</pre>
+      </details>
+    </div>
+  );
+}
+
+export function GatewayWorkbench() {
+  const [input, setInput] = useState<AgentCommandInput>({
+    user: 'user',
+    userInput: '真沙箱读取 public/notice.txt',
+    mode: 'docker_sandbox_execute',
+    maxSteps: 5,
+    riskBudget: 80
+  });
+  const [running, setRunning] = useState(false);
+  const [result, setResult] = useState<AgentCommandResponse | null>(null);
+
+  const selectedMode = modes.find((mode) => mode.value === input.mode) ?? modes[0];
+  const selectedGuide = modeGuide[input.mode];
+
+  function applySample(sample: typeof samples[number]) {
+    setInput({
+      user: sample.user,
+      userInput: sample.text,
+      mode: sample.mode,
+      maxSteps: 5,
+      riskBudget: 80
+    });
+    setResult(null);
+  }
+
+  async function handleSubmit() {
+    setRunning(true);
+    try {
+      const response = await api.runCommand(input);
+      setResult(response);
+    } finally {
+      setRunning(false);
+    }
+  }
+
+  return (
+    <div className="page-grid clean-page-grid">
+      <section className="workbench-hero clean-hero">
+        <div>
+          <span className="eyebrow">Step 1</span>
+          <h1>选择一个任务，查看授权结果</h1>
+          <p>这是项目的主入口。建议先点“真沙箱读取”，再演示“敏感文件拦截”和“OAuth 外发拒绝”。</p>
+        </div>
+        <div className="flow-strip clean-flow">
+          <span>Agent</span>
+          <b>→</b>
+          <span>Gateway</span>
+          <b>→</b>
+          <span>Token</span>
+          <b>→</b>
+          <span>Sandbox</span>
+        </div>
+      </section>
+
+      <section className="clean-workbench-grid">
+        <Section
+          eyebrow="Input"
+          title="演示输入"
+          description="选择模式和样例后点击运行，右侧样例会自动填入任务。"
+        >
+          <div className="command-form compact-form">
+            <label>
+              <span>演示模式</span>
+              <select value={input.mode} onChange={(event) => setInput({ ...input, mode: event.target.value as AgentRunMode })}>
+                {modes.map((mode) => <option key={mode.value} value={mode.value}>{mode.label}</option>)}
+              </select>
+            </label>
+
+            <label>
+              <span>用户身份</span>
+              <select value={input.user} onChange={(event) => setInput({ ...input, user: event.target.value })}>
+                <option value="user">普通用户 user</option>
+                <option value="admin">管理员 admin</option>
+              </select>
+            </label>
+
+            <label>
+              <span>自然语言任务</span>
+              <textarea
+                value={input.userInput}
+                onChange={(event) => setInput({ ...input, userInput: event.target.value })}
+                placeholder="例如：真沙箱读取 public/notice.txt"
+              />
+            </label>
+
+            <div className="command-actions">
+              <button className="primary-btn" disabled={running || !input.userInput.trim()} onClick={() => void handleSubmit()}>
+                {running ? '运行中...' : '运行演示'}
+              </button>
+              <button className="secondary-btn" onClick={() => setResult(null)}>清空结果</button>
+            </div>
+
+            <div className="mode-guide-panel">
+              <span className="eyebrow">Mode Guide</span>
+              <h3>{selectedMode.label}</h3>
+              <p>{selectedMode.short}。{selectedGuide.focus}</p>
+              <div className="mode-guide-block">
+                <strong>操作步骤</strong>
+                <ol>
+                  {selectedGuide.steps.map((step) => <li key={step}>{step}</li>)}
+                </ol>
+              </div>
+              <div className="mode-guide-block">
+                <strong>结果怎么看</strong>
+                <p>{selectedGuide.result}</p>
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        <Section
+          eyebrow="Samples"
+          title="推荐样例"
+          description="两列按钮布局，点击即可填入演示输入。"
+        >
+          <div className="sample-grid clean-sample-grid">
+            {samples.map((sample, index) => (
+              <button key={sample.title} className="sample-card clean-sample-card" onClick={() => applySample(sample)}>
+                <span>{index + 1}</span>
+                <strong>{sample.title}</strong>
+                <small>{sample.description}</small>
+                <code>{sample.text}</code>
+              </button>
+            ))}
+          </div>
+        </Section>
+      </section>
+
+      <Section
+        eyebrow="Result"
+        title="授权与执行结果"
+        description="只展示最关键的信息：结论、原因、工具调用、沙箱证据。完整 JSON 放在折叠区。"
+      >
+        <ResultPanel result={result} />
+      </Section>
+    </div>
+  );
+}

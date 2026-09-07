@@ -1,0 +1,76 @@
+{
+  "name": "OAuth-only vs AgentGuard Research Comparison",
+  "generated_at": "2026-06-28T23:07:45",
+  "total": 6,
+  "passed": 6,
+  "failed": 0,
+  "accuracy": 1.0,
+  "cases": [
+    {
+      "id": "case_001_normal_public_read",
+      "scenario": "normal_public_read",
+      "oauth_only": "allow",
+      "agentguard": "allow",
+      "expected_oauth_only": "allow",
+      "expected_agentguard": "allow",
+      "matched": true,
+      "research_value": "normal",
+      "summary": "OAuth-only=allow, AgentGuard=allow."
+    },
+    {
+      "id": "case_002_missing_scope_email",
+      "scenario": "scope_missing_email",
+      "oauth_only": "deny",
+      "agentguard": "deny",
+      "expected_oauth_only": "deny",
+      "expected_agentguard": "deny",
+      "matched": true,
+      "research_value": "medium",
+      "summary": "Both OAuth-only and AgentGuard deny this request."
+    },
+    {
+      "id": "case_003_scope_enough_but_sandbox_denies_email",
+      "scenario": "scope_enough_but_sandbox_denies",
+      "oauth_only": "allow",
+      "agentguard": "deny",
+      "expected_oauth_only": "allow",
+      "expected_agentguard": "deny",
+      "matched": true,
+      "research_value": "high",
+      "summary": "OAuth-only allows this request, but AgentGuard blocks or confirms it."
+    },
+    {
+      "id": "case_004_scope_enough_but_no_shell_sandbox_denies",
+      "scenario": "scope_enough_but_no_shell_sandbox_denies",
+      "oauth_only": "allow",
+      "agentguard": "deny",
+      "expected_oauth_only": "allow",
+      "expected_agentguard": "deny",
+      "matched": true,
+      "research_value": "high",
+      "summary": "OAuth-only allows this request, but AgentGuard blocks or confirms it."
+    },
+    {
+      "id": "case_005_scope_enough_but_readonly_sandbox_denies",
+      "scenario": "scope_enough_but_readonly_sandbox_denies",
+      "oauth_only": "allow",
+      "agentguard": "deny",
+      "expected_oauth_only": "allow",
+      "expected_agentguard": "deny",
+      "matched": true,
+      "research_value": "high",
+      "summary": "OAuth-only allows this request, but AgentGuard blocks or confirms it."
+    },
+    {
+      "id": "case_006_scope_enough_but_strict_sandbox_denies_http",
+      "scenario": "scope_enough_but_strict_sandbox_denies_http",
+      "oauth_only": "allow",
+      "agentguard": "deny",
+      "expected_oauth_only": "allow",
+      "expected_agentguard": "deny",
+      "matched": true,
+      "research_value": "high",
+      "summary": "OAuth-only allows this request, but AgentGuard blocks or confirms it."
+    }
+  ]
+}

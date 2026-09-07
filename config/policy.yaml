@@ -1,0 +1,824 @@
+# AI Agent 工具调用授权策略配置文件
+# 设计目标：
+# 1. 所有 Agent 工具调用默认不可信
+# 2. 普通操作自动放行，高风险操作人工确认，危险操作直接拒绝
+# 3. 策略尽量配置化，减少业务代码硬编码
+# 4. 保留 user / admin 两类身份与角色，保证系统清晰易讲
+#
+# v4.2-policy-and-semantic-ready 说明：
+# - 本版本只调整后端已支持读取的配置字段，不新增后端未知结构。
+# - 强化路径穿越、敏感文件、Prompt Injection、Shell 高危命令、SQL 风险、邮件外发风险。
+# - 增加 config/policy.yaml 保护，防止 Agent 自动修改安全策略。
+# - 补齐 */config/*、*.env.*、*/.ssh/* 等 fnmatch 路径模式，减少绕过空间。
+# - 增加 config/semantic_guard.yaml 保护，防止 Agent 篡改语义检测样例与阈值。
+
+version: "4.2-policy-and-semantic-ready"
+
+# ============================================================
+# 1. 用户与角色映射
+# ============================================================
+# 系统保留两个身份入口：
+# - user：普通用户
+# - admin：管理员
+# 其他业务身份不进入策略层，避免权限来源混乱。
+
+users:
+  user: user
+  admin: admin
+
+# ============================================================
+# 2. 系统支持的标准工具
+# ============================================================
+# Agent 或 LLM 不能临时创造未登记工具。
+
+supported_tools:
+  - file.read
+  - file.write
+  - file.delete
+  - email.send
+  - shell.run
+  - db.query
+
+# ============================================================
+# 3. 每种工具必须具备的参数
+# ============================================================
+
+required_params:
+  file.read:
+    - path
+
+  file.write:
+    - path
+    - content
+
+  file.delete:
+    - path
+
+  email.send:
+    - to
+    - content
+
+  shell.run:
+    - command
+
+  db.query:
+    - sql
+
+# ============================================================
+# 4. Agent 计划质量阈值
+# ============================================================
+# agent_confidence < 0.60：直接拒绝
+# 0.60 <= agent_confidence < 0.88：至少人工确认
+# agent_confidence >= 0.88：进入正常风险评估
+
+agent_plan:
+  min_auto_confidence: 0.88
+  min_confirm_confidence: 0.60
+
+# ============================================================
+# 5. 内部可信邮箱域名
+# ============================================================
+
+internal_email_domains:
+  - "@sdu.edu.cn"
+  - "@mail.sdu.edu.cn"
+  - "@student.sdu.edu.cn"
+
+# ============================================================
+# 6. 工具基础风险分
+# ============================================================
+# 分数越高，越不可能自动执行。
+# 这里只做小幅增强，避免正常演示场景大面积误拒绝。
+
+tool_risk:
+  file.read: 8
+  file.write: 40
+  file.delete: 80
+  email.send: 50
+  shell.run: 90
+  db.query: 35
+
+# ============================================================
+# 7. 资源路径风险分
+# ============================================================
+# 当前代码是“路径子串命中”机制，所以关键词不要太泛。
+# 例如 key 太容易误伤，建议用 .key、private_key、api_key 这类更具体的词。
+
+resource_risk:
+  public/: 0
+  course/: 8
+  data/: 10
+  logs/: 15
+  readonly/: 10
+
+  private/: 45
+  backup/: 40
+  dump/: 60
+  database/: 35
+  users.db: 60
+  db/: 35
+  sqlite: 45
+
+  secret/: 90
+  secrets/: 90
+  credentials/: 90
+  config/secrets: 95
+  config/secrets/: 95
+  config/policy.yaml: 100
+  policy.yaml: 85
+  config/semantic_guard.yaml: 90
+  semantic_guard.yaml: 80
+
+  .env: 90
+  .env.local: 90
+  .env.development: 80
+  .env.production: 95
+  .env.prod: 95
+  .env.dev: 80
+
+  .ssh/: 90
+  ssh/: 75
+  authorized_keys: 85
+  known_hosts: 60
+  id_rsa: 90
+  id_dsa: 90
+  id_ed25519: 90
+  id_ecdsa: 90
+
+  private_key: 90
+  public_key: 45
+  secret_key: 90
+  jwt_secret: 90
+  client_secret: 90
+  session_secret: 85
+  cookie_secret: 85
+
+  api_key: 85
+  apikey: 85
+  access_key: 85
+  secret_access_key: 90
+  aws_access_key_id: 85
+  aws_secret_access_key: 90
+  refresh_token: 85
+  access_token: 85
+  token: 80
+
+  database_url: 85
+  db_password: 90
+  connection_string: 80
+  password: 90
+  passwd: 90
+
+  .pem: 85
+  .key: 80
+  .p12: 85
+  .pfx: 85
+  .crt: 45
+  .cer: 45
+
+# ============================================================
+# 8. 风险分决策阈值
+# ============================================================
+# <= 39：allow
+# 40 - 79：confirm
+# >= 80：deny
+
+decision_threshold:
+  allow_max: 39
+  confirm_max: 79
+  deny_min: 80
+
+# ============================================================
+# 9. 细粒度风险加分
+# ============================================================
+# v4-hardening 调整：
+# - 路径穿越、危险命令、危险 SQL 更偏向直接拒绝。
+# - Prompt Injection 和敏感内容外发风险提高到更容易触发人工确认或拒绝。
+
+risk_scores:
+  unknown_tool: 120
+
+  low_confidence_deny: 100
+  low_confidence_confirm: 45
+
+  missing_params: 60
+
+  path_traversal: 100
+  absolute_path: 80
+
+  role_deny: 90
+  no_role_policy: 25
+
+  missing_email_to: 35
+  external_email: 45
+  sensitive_email_content: 60
+
+  prompt_injection_keyword: 55
+  sensitive_content_keyword: 35
+
+  command_keyword: 75
+
+  sql_keyword: 80
+  non_select_sql: 65
+
+  contract_parse_error: 120
+
+# ============================================================
+# 10. 危险关键词配置
+# ============================================================
+
+dangerous_keywords:
+  path:
+    # 路径穿越与编码绕过
+    - "../"
+    - "..\\"
+    - "..%2f"
+    - "..%5c"
+    - "%2e%2e"
+    - "%252e%252e"
+    - "%2f"
+    - "%5c"
+    - "%252f"
+    - "%255c"
+    - "....//"
+    - "..././"
+    - "public/../"
+    - "course/../"
+
+    # 系统路径与绝对路径
+    - "/etc/passwd"
+    - "/etc/shadow"
+    - "/root/"
+    - "/home/"
+    - "c:\\"
+    - "c:/"
+    - "d:\\"
+    - "d:/"
+    - "\\windows\\"
+    - "windows/system32"
+    - "appdata"
+    - "program files"
+
+    # 敏感目录与文件
+    - "secret/"
+    - "secrets/"
+    - "private/"
+    - "credentials"
+    - "backup"
+    - "dump"
+    - "config/secrets"
+    - "config/policy.yaml"
+    - "policy.yaml"
+    - "semantic_guard.yaml"
+    - ".env"
+    - ".env.local"
+    - ".env.production"
+    - ".env.prod"
+
+    # SSH / 证书 / 密钥
+    - "~/.ssh"
+    - ".ssh/"
+    - "authorized_keys"
+    - "known_hosts"
+    - "id_rsa"
+    - "id_dsa"
+    - "id_ed25519"
+    - "id_ecdsa"
+    - "private_key"
+    - "secret_key"
+    - "jwt_secret"
+    - "client_secret"
+    - "database_url"
+    - "db_password"
+    - ".pem"
+    - ".key"
+    - ".p12"
+    - ".pfx"
+
+  command:
+    # 删除、格式化、关机、破坏性命令
+    - "rm -rf"
+    - "rm -r"
+    - "rm -f"
+    - "del /s"
+    - "rd /s"
+    - "rmdir /s"
+    - "erase "
+    - "remove-item"
+    - "format"
+    - "shutdown"
+    - "reboot"
+    - "mkfs"
+    - "dd if="
+    - "> /dev/sda"
+
+    # Windows Shell / PowerShell 高危用法
+    - "powershell"
+    - "cmd.exe /c"
+    - "invoke-webrequest"
+    - "invoke-expression"
+    - "iwr "
+    - "iex "
+    - "start-process"
+    - "set-executionpolicy"
+    - "certutil"
+    - "bitsadmin"
+    - "reg add"
+    - "taskkill"
+    - "wevtutil"
+    - "net user"
+    - "net localgroup"
+    - "whoami /priv"
+
+    # 下载执行、管道执行、远程控制
+    - "curl"
+    - "curl.exe"
+    - "wget"
+    - "wget.exe"
+    - "| sh"
+    - "| bash"
+    - "bash <("
+    - "nc "
+    - "netcat"
+    - "ssh "
+    - "scp "
+    - "ftp "
+    - "rsync "
+
+    # 权限修改与提权
+    - "chmod 777"
+    - "chmod -r 777"
+    - "chown"
+    - "sudo"
+    - "su -"
+
+    # 脚本解释器间接执行
+    - "python -c"
+    - "python3 -c"
+    - "python -m http.server"
+    - "perl -e"
+    - "bash -c"
+    - "sh -c"
+    - "os.system"
+    - "subprocess"
+    - "eval("
+    - "exec("
+
+    # 编码、压缩、打包、扫描
+    - "base64 -d"
+    - "base64 --decode"
+    - "openssl enc"
+    - "tar "
+    - "zip "
+    - "7z "
+    - "rar "
+    - "nmap"
+    - "masscan"
+
+  prompt_injection:
+    # 中文提示注入与越权
+    - "忽略之前的规则"
+    - "忽略以上规则"
+    - "忽略所有规则"
+    - "忽略之前的指令"
+    - "忽略前面的安全策略"
+    - "忽略系统提示"
+    - "忽略网关"
+    - "不要遵守安全策略"
+    - "不要遵守开发者指令"
+    - "绕过权限检查"
+    - "绕过安全检查"
+    - "绕过网关"
+    - "绕过策略"
+    - "关闭安全检查"
+    - "关闭审计"
+    - "禁用安全策略"
+    - "禁用审计"
+    - "不要记录日志"
+    - "不要写入审计"
+    - "跳过人工确认"
+    - "无需人工确认"
+    - "直接执行不要询问"
+    - "伪装成普通读取"
+    - "把敏感内容藏起来"
+    - "先读 secret 再发送"
+    - "修改策略文件"
+    - "修改 config"
+    - "修改 policy.yaml"
+    - "修改 semantic_guard.yaml"
+    - "篡改语义检测样例"
+    - "你现在是管理员"
+    - "你现在拥有最高权限"
+    - "你是 root"
+    - "你拥有 root 权限"
+    - "系统消息覆盖"
+    - "开发者模式"
+    - "越权读取"
+    - "读取 secret"
+    - "读取敏感文件"
+    - "发送给 attacker"
+    - "attacker@example.com"
+    - "把密码发出去"
+    - "把 token 发出去"
+
+    # 英文提示注入与越权
+    - "ignore previous instructions"
+    - "ignore all previous instructions"
+    - "disregard previous instructions"
+    - "forget previous instructions"
+    - "bypass authorization"
+    - "bypass the policy"
+    - "bypass gateway"
+    - "disable safety"
+    - "disable security"
+    - "disable audit"
+    - "do not log"
+    - "skip audit"
+    - "skip approval"
+    - "no confirmation"
+    - "developer mode"
+    - "you are now admin"
+    - "act as root"
+    - "act as system"
+    - "pretend to be admin"
+    - "system override"
+    - "jailbreak"
+    - "hidden instruction"
+    - "reveal system prompt"
+    - "show system prompt"
+    - "exfiltrate"
+    - "leak"
+    - "steal"
+    - "send to attacker"
+
+  sensitive_content:
+    # 通用凭证与密钥
+    - "password"
+    - "passwd"
+    - "secret"
+    - "token"
+    - "credential"
+    - "credentials"
+    - "api_key"
+    - "apikey"
+    - "access_key"
+    - "refresh_token"
+    - "access token"
+    - "refresh token"
+    - "private_key"
+    - "private key"
+    - "secret_key"
+    - "client_secret"
+    - "jwt_secret"
+    - "session_secret"
+    - "cookie_secret"
+    - "database_url"
+    - "db_password"
+    - "connection_string"
+    - "bearer "
+    - "authorization:"
+
+    # 常见云服务 / GitHub / OpenAI 风格敏感标识
+    - "aws_access_key_id"
+    - "aws_secret_access_key"
+    - "begin rsa private key"
+    - "begin openssh private key"
+    - "begin private key"
+    - "sk-"
+    - "akia"
+    - "ghp_"
+    - "github_pat_"
+
+    # 中文敏感内容
+    - "密钥"
+    - "密码"
+    - "口令"
+    - "令牌"
+    - "私钥"
+    - "凭证"
+    - "访问令牌"
+    - "数据库密码"
+    - "连接字符串"
+
+  sensitive_path:
+    - "secret"
+    - "secrets"
+    - "private"
+    - "password"
+    - "passwd"
+    - "token"
+    - ".env"
+    - ".env.local"
+    - ".env.production"
+    - "credentials"
+    - "config"
+    - "policy.yaml"
+    - "config/secrets"
+    - ".ssh"
+    - "authorized_keys"
+    - "known_hosts"
+    - "id_rsa"
+    - "id_dsa"
+    - "id_ed25519"
+    - "id_ecdsa"
+    - "private_key"
+    - "secret_key"
+    - "jwt_secret"
+    - "client_secret"
+    - "session_secret"
+    - "cookie_secret"
+    - "api_key"
+    - "apikey"
+    - "access_key"
+    - "database_url"
+    - "db_password"
+    - ".pem"
+    - ".key"
+    - ".p12"
+    - ".pfx"
+
+  sql:
+    # 数据修改 / 删除 / 结构变更
+    - "drop table"
+    - "delete from"
+    - "truncate"
+    - "update "
+    - "insert into"
+    - "alter table"
+    - "create table"
+    - "grant "
+    - "revoke "
+
+    # 注入、拖库、敏感字段读取
+    - "union select"
+    - "select * from users"
+    - "select password"
+    - "select passwd"
+    - "select token"
+    - "select api_key"
+    - "select secret"
+    - " from accounts"
+    - " from sqlite_master"
+    - "information_schema"
+    - "pg_catalog"
+    - "mysql.user"
+    - "admin_users"
+    - "dump"
+    - "backup"
+
+    # 数据库危险函数与外带
+    - "attach database"
+    - "pragma "
+    - "load_extension"
+    - "outfile"
+    - " into outfile"
+    - "load_file"
+    - "xp_cmdshell"
+    - "sleep("
+    - "benchmark("
+
+    # 认证绕过
+    - " or '1'='1"
+    - " or \"1\"=\"1"
+    - " or 1=1"
+    - " or true"
+    - "'1'='1"
+    - "\"1\"=\"1"
+    - "--"
+    - "/*"
+    - "*/"
+
+    # 敏感字段关键词
+    - "password"
+    - "passwd"
+    - "credential"
+    - "credentials"
+    - "api_key"
+    - "apikey"
+    - "secret_key"
+    - "token"
+
+# ============================================================
+# 11. 可能造成数据外发或副作用的工具
+# ============================================================
+
+external_output_tools:
+  - email.send
+  - shell.run
+  - db.query
+  - file.write
+  - file.delete
+
+# ============================================================
+# 12. 角色权限策略
+# ============================================================
+# 只保留 user 和 admin。
+# 策略优先级：deny > confirm > allow。
+#
+# user：
+# - 可以读取 public/course
+# - 可以执行数据库查询，但危险 SQL 会被风险规则拦截
+# - 写 public 文件、发邮件、删 public 文件需要确认
+# - 禁止访问 secret/private/credentials/config 等敏感区域
+# - 禁止写入或删除 course
+# - 禁止 shell
+#
+# admin：
+# - 可以访问更多资源
+# - 删除文件和 shell 执行仍需人工确认
+# - 禁止自动修改安全策略文件和 config/secrets
+# - 高风险敏感路径会因为风险分转入确认或拒绝
+
+roles:
+  user:
+    allow:
+      - tool: file.read
+        resource: public/*
+      - tool: file.read
+        resource: course/*
+      - tool: db.query
+        resource: "*"
+
+    confirm:
+      - tool: email.send
+        resource: "*"
+      - tool: file.write
+        resource: public/*
+      - tool: file.delete
+        resource: public/*
+
+    deny:
+      - tool: "*"
+        resource: secret/*
+      - tool: "*"
+        resource: secrets/*
+      - tool: "*"
+        resource: private/*
+      - tool: "*"
+        resource: credentials/*
+      - tool: "*"
+        resource: config/*
+      - tool: "*"
+        resource: config/secrets/*
+      - tool: "*"
+        resource: "*/config/*"
+      - tool: "*"
+        resource: "./config/*"
+      - tool: "*"
+        resource: "*.env"
+      - tool: "*"
+        resource: "*.env.*"
+      - tool: "*"
+        resource: ".env.*"
+      - tool: "*"
+        resource: "*/.env"
+      - tool: "*"
+        resource: "*/.env.*"
+      - tool: "*"
+        resource: "*credentials*"
+      - tool: "*"
+        resource: "*secrets*"
+      - tool: "*"
+        resource: "*.pem"
+      - tool: "*"
+        resource: "*.key"
+      - tool: "*"
+        resource: "*.p12"
+      - tool: "*"
+        resource: "*.pfx"
+      - tool: file.write
+        resource: course/*
+      - tool: file.delete
+        resource: course/*
+      - tool: file.write
+        resource: "*policy*"
+      - tool: file.delete
+        resource: "*policy*"
+      - tool: shell.run
+        resource: "*"
+
+  admin:
+    allow:
+      - tool: file.read
+        resource: "*"
+      - tool: file.write
+        resource: "*"
+      - tool: email.send
+        resource: "*"
+      - tool: db.query
+        resource: "*"
+
+    confirm:
+      - tool: file.delete
+        resource: "*"
+      - tool: shell.run
+        resource: "*"
+
+    deny:
+      - tool: file.write
+        resource: config/policy.yaml
+      - tool: "*"
+        resource: config/semantic_guard.yaml
+      - tool: file.delete
+        resource: config/policy.yaml
+      - tool: file.write
+        resource: config/semantic_guard.yaml
+      - tool: file.delete
+        resource: config/semantic_guard.yaml
+      - tool: file.write
+        resource: config/secrets/*
+      - tool: file.delete
+        resource: config/secrets/*
+      - tool: file.write
+        resource: "*/config/*"
+      - tool: file.delete
+        resource: "*/config/*"
+      - tool: file.write
+        resource: "./config/*"
+      - tool: file.delete
+        resource: "./config/*"
+      - tool: file.write
+        resource: "*secrets*"
+      - tool: file.delete
+        resource: "*secrets*"
+      - tool: file.write
+        resource: "*.env"
+      - tool: file.delete
+        resource: "*.env"
+      - tool: file.write
+        resource: "*.env.*"
+      - tool: file.delete
+        resource: "*.env.*"
+      - tool: file.write
+        resource: "*/.env"
+      - tool: file.delete
+        resource: "*/.env"
+      - tool: file.write
+        resource: "*/.env.*"
+      - tool: file.delete
+        resource: "*/.env.*"
+      - tool: file.write
+        resource: "*policy*"
+      - tool: file.delete
+        resource: "*policy*"
+
+# ============================================================
+# 13. 任务授权合约默认策略
+# ============================================================
+# 任务合约体现“任务级零信任”思想：
+# 即使用户有权限，Agent 当前任务也必须被限制在任务边界内。
+
+task_contract:
+  default_denied_tools:
+    - shell.run
+    - file.delete
+    - code.exec
+    - http.request
+    - browser.open
+    - network.request
+    - browser.upload
+    - git.push
+    - git.commit
+    - package.install
+
+  default_denied_paths:
+    - secret/*
+    - secrets/*
+    - private/*
+    - credentials/*
+    - config/*
+    - config/semantic_guard.yaml
+    - config/secrets/*
+    - ./config/*
+    - "*/config/*"
+    - "*/config/secrets/*"
+    - ../*
+    - ..\\*
+    - .env
+    - .env.*
+    - "*/.env"
+    - "*/.env.*"
+    - "*/.ssh/*"
+    - id_rsa
+    - id_dsa
+    - id_ed25519
+    - id_ecdsa
+    - "*id_rsa*"
+    - "*id_ed25519*"
+    - "*private_key*"
+    - "*secret_key*"
+    - "*.pem"
+    - "*.key"
+    - "*.p12"
+    - "*.pfx"
+    - "*password*"
+    - "*passwd*"
+    - "*token*"
+    - "*secret*"
+    - "*credential*"
+    - "*api_key*"
+    - "*private_key*"
+
+  default_risk_budget: 70
+  default_allow_external_send: false
+  default_require_human_confirm: false

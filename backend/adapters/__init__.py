@@ -1,0 +1,1 @@
+﻿# External Agent Adapter package.

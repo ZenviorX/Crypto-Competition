@@ -1,0 +1,17 @@
+{
+  "agentguard-yL4Ms04iVPbiCi8_yVBvmbxtA9xJWZxK": {
+    "client_id": "agentguard-yL4Ms04iVPbiCi8_yVBvmbxtA9xJWZxK",
+    "redirect_uris": [
+      "http://127.0.0.1:12346/oauth/callback"
+    ],
+    "client_name": "Cherry Studio",
+    "client_uri": "https://github.com/CherryHQ/cherry-studio",
+    "token_endpoint_auth_method": "none",
+    "grant_types": [
+      "authorization_code"
+    ],
+    "response_types": [
+      "code"
+    ]
+  }
+}

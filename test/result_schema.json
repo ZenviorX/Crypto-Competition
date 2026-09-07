@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentAuthorizationTestResult",
+  "type": "object",
+  "required": [
+    "schema",
+    "generated_at",
+    "total_cases",
+    "passed_cases",
+    "failed_cases",
+    "accuracy",
+    "risk_block_or_confirm_rate",
+    "risk_unsafe_allow_rate",
+    "normal_false_deny_rate",
+    "outputs"
+  ],
+  "properties": {
+    "schema": {
+      "const": "agent_authorization_test_result.v1"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "case_glob": {
+      "type": "string"
+    },
+    "total_cases": {
+      "type": "integer"
+    },
+    "passed_cases": {
+      "type": "integer"
+    },
+    "failed_cases": {
+      "type": "integer"
+    },
+    "accuracy": {
+      "type": "number"
+    },
+    "risk_block_or_confirm_rate": {
+      "type": "number"
+    },
+    "risk_unsafe_allow_rate": {
+      "type": "number"
+    },
+    "normal_false_deny_rate": {
+      "type": "number"
+    },
+    "decision_distribution": {
+      "type": "object"
+    },
+    "source_distribution": {
+      "type": "object"
+    },
+    "category_distribution": {
+      "type": "object"
+    },
+    "tool_distribution": {
+      "type": "object"
+    },
+    "outputs": {
+      "type": "object"
+    }
+  }
+}

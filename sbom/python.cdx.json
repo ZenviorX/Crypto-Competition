@@ -1,0 +1,1471 @@
+{
+  "bomFormat": "CycloneDX",
+  "components": [
+    {
+      "bom-ref": "pkg:pypi/annotated-doc@0.0.4",
+      "name": "annotated-doc",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "annotated-doc"
+        }
+      ],
+      "purl": "pkg:pypi/annotated-doc@0.0.4",
+      "type": "library",
+      "version": "0.0.4"
+    },
+    {
+      "bom-ref": "pkg:pypi/annotated-types@0.7.0",
+      "name": "annotated-types",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "annotated-types"
+        }
+      ],
+      "purl": "pkg:pypi/annotated-types@0.7.0",
+      "type": "library",
+      "version": "0.7.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/anyio@4.13.0",
+      "name": "anyio",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "anyio"
+        }
+      ],
+      "purl": "pkg:pypi/anyio@4.13.0",
+      "type": "library",
+      "version": "4.13.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/certifi@2025.11.12",
+      "name": "certifi",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "certifi"
+        }
+      ],
+      "purl": "pkg:pypi/certifi@2025.11.12",
+      "type": "library",
+      "version": "2025.11.12"
+    },
+    {
+      "bom-ref": "pkg:pypi/cffi@2.0.0",
+      "name": "cffi",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "cffi"
+        }
+      ],
+      "purl": "pkg:pypi/cffi@2.0.0",
+      "type": "library",
+      "version": "2.0.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/click@8.4.1",
+      "name": "click",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "click"
+        }
+      ],
+      "purl": "pkg:pypi/click@8.4.1",
+      "type": "library",
+      "version": "8.4.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/colorama@0.4.6",
+      "name": "colorama",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "colorama"
+        }
+      ],
+      "purl": "pkg:pypi/colorama@0.4.6",
+      "type": "library",
+      "version": "0.4.6"
+    },
+    {
+      "bom-ref": "pkg:pypi/coverage@7.14.1",
+      "name": "coverage",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "coverage"
+        }
+      ],
+      "purl": "pkg:pypi/coverage@7.14.1",
+      "type": "library",
+      "version": "7.14.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/cryptography@49.0.0",
+      "name": "cryptography",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "cryptography"
+        }
+      ],
+      "purl": "pkg:pypi/cryptography@49.0.0",
+      "type": "library",
+      "version": "49.0.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/distro@1.9.0",
+      "name": "distro",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "distro"
+        }
+      ],
+      "purl": "pkg:pypi/distro@1.9.0",
+      "type": "library",
+      "version": "1.9.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/fastapi@0.136.1",
+      "name": "fastapi",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "direct"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "fastapi"
+        }
+      ],
+      "purl": "pkg:pypi/fastapi@0.136.1",
+      "type": "library",
+      "version": "0.136.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/filelock@3.29.1",
+      "name": "filelock",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "filelock"
+        }
+      ],
+      "purl": "pkg:pypi/filelock@3.29.1",
+      "type": "library",
+      "version": "3.29.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/fsspec@2026.4.0",
+      "name": "fsspec",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "fsspec"
+        }
+      ],
+      "purl": "pkg:pypi/fsspec@2026.4.0",
+      "type": "library",
+      "version": "2026.4.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/h11@0.16.0",
+      "name": "h11",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "h11"
+        }
+      ],
+      "purl": "pkg:pypi/h11@0.16.0",
+      "type": "library",
+      "version": "0.16.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/hf-xet@1.5.1",
+      "name": "hf-xet",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "hf-xet"
+        }
+      ],
+      "purl": "pkg:pypi/hf-xet@1.5.1",
+      "type": "library",
+      "version": "1.5.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/httpcore@1.0.9",
+      "name": "httpcore",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "httpcore"
+        }
+      ],
+      "purl": "pkg:pypi/httpcore@1.0.9",
+      "type": "library",
+      "version": "1.0.9"
+    },
+    {
+      "bom-ref": "pkg:pypi/httpx@0.28.1",
+      "name": "httpx",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "httpx"
+        }
+      ],
+      "purl": "pkg:pypi/httpx@0.28.1",
+      "type": "library",
+      "version": "0.28.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/huggingface-hub@1.18.0",
+      "name": "huggingface_hub",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "huggingface-hub"
+        }
+      ],
+      "purl": "pkg:pypi/huggingface-hub@1.18.0",
+      "type": "library",
+      "version": "1.18.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/idna@3.11",
+      "name": "idna",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "idna"
+        }
+      ],
+      "purl": "pkg:pypi/idna@3.11",
+      "type": "library",
+      "version": "3.11"
+    },
+    {
+      "bom-ref": "pkg:pypi/iniconfig@2.3.0",
+      "name": "iniconfig",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "iniconfig"
+        }
+      ],
+      "purl": "pkg:pypi/iniconfig@2.3.0",
+      "type": "library",
+      "version": "2.3.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/jinja2@3.1.6",
+      "name": "Jinja2",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "jinja2"
+        }
+      ],
+      "purl": "pkg:pypi/jinja2@3.1.6",
+      "type": "library",
+      "version": "3.1.6"
+    },
+    {
+      "bom-ref": "pkg:pypi/jiter@0.15.0",
+      "name": "jiter",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "jiter"
+        }
+      ],
+      "purl": "pkg:pypi/jiter@0.15.0",
+      "type": "library",
+      "version": "0.15.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/joblib@1.5.3",
+      "name": "joblib",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "joblib"
+        }
+      ],
+      "purl": "pkg:pypi/joblib@1.5.3",
+      "type": "library",
+      "version": "1.5.3"
+    },
+    {
+      "bom-ref": "pkg:pypi/markdown-it-py@4.2.0",
+      "name": "markdown-it-py",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "markdown-it-py"
+        }
+      ],
+      "purl": "pkg:pypi/markdown-it-py@4.2.0",
+      "type": "library",
+      "version": "4.2.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/markupsafe@3.0.3",
+      "name": "MarkupSafe",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "markupsafe"
+        }
+      ],
+      "purl": "pkg:pypi/markupsafe@3.0.3",
+      "type": "library",
+      "version": "3.0.3"
+    },
+    {
+      "bom-ref": "pkg:pypi/mdurl@0.1.2",
+      "name": "mdurl",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "mdurl"
+        }
+      ],
+      "purl": "pkg:pypi/mdurl@0.1.2",
+      "type": "library",
+      "version": "0.1.2"
+    },
+    {
+      "bom-ref": "pkg:pypi/mpmath@1.3.0",
+      "name": "mpmath",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "mpmath"
+        }
+      ],
+      "purl": "pkg:pypi/mpmath@1.3.0",
+      "type": "library",
+      "version": "1.3.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/narwhals@2.22.1",
+      "name": "narwhals",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "narwhals"
+        }
+      ],
+      "purl": "pkg:pypi/narwhals@2.22.1",
+      "type": "library",
+      "version": "2.22.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/networkx@3.6.1",
+      "name": "networkx",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "networkx"
+        }
+      ],
+      "purl": "pkg:pypi/networkx@3.6.1",
+      "type": "library",
+      "version": "3.6.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/numpy@2.3.5",
+      "name": "numpy",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "direct"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "numpy"
+        }
+      ],
+      "purl": "pkg:pypi/numpy@2.3.5",
+      "type": "library",
+      "version": "2.3.5"
+    },
+    {
+      "bom-ref": "pkg:pypi/openai@2.41.0",
+      "name": "openai",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "direct"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "openai"
+        }
+      ],
+      "purl": "pkg:pypi/openai@2.41.0",
+      "type": "library",
+      "version": "2.41.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/packaging@25.0",
+      "name": "packaging",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "packaging"
+        }
+      ],
+      "purl": "pkg:pypi/packaging@25.0",
+      "type": "library",
+      "version": "25.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/pluggy@1.6.0",
+      "name": "pluggy",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "pluggy"
+        }
+      ],
+      "purl": "pkg:pypi/pluggy@1.6.0",
+      "type": "library",
+      "version": "1.6.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/pycparser@3.0",
+      "name": "pycparser",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "pycparser"
+        }
+      ],
+      "purl": "pkg:pypi/pycparser@3.0",
+      "type": "library",
+      "version": "3.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/pydantic@2.13.4",
+      "name": "pydantic",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "direct"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "pydantic"
+        }
+      ],
+      "purl": "pkg:pypi/pydantic@2.13.4",
+      "type": "library",
+      "version": "2.13.4"
+    },
+    {
+      "bom-ref": "pkg:pypi/pydantic-core@2.46.4",
+      "name": "pydantic_core",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "pydantic-core"
+        }
+      ],
+      "purl": "pkg:pypi/pydantic-core@2.46.4",
+      "type": "library",
+      "version": "2.46.4"
+    },
+    {
+      "bom-ref": "pkg:pypi/pygments@2.20.0",
+      "name": "Pygments",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "pygments"
+        }
+      ],
+      "purl": "pkg:pypi/pygments@2.20.0",
+      "type": "library",
+      "version": "2.20.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/pyjwt@2.13.0",
+      "name": "PyJWT",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "direct"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "pyjwt"
+        }
+      ],
+      "purl": "pkg:pypi/pyjwt@2.13.0",
+      "type": "library",
+      "version": "2.13.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/pytest@9.0.3",
+      "name": "pytest",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "direct"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "pytest"
+        }
+      ],
+      "purl": "pkg:pypi/pytest@9.0.3",
+      "type": "library",
+      "version": "9.0.3"
+    },
+    {
+      "bom-ref": "pkg:pypi/pytest-cov@7.1.0",
+      "name": "pytest-cov",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "direct"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "pytest-cov"
+        }
+      ],
+      "purl": "pkg:pypi/pytest-cov@7.1.0",
+      "type": "library",
+      "version": "7.1.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/python-dotenv@1.2.2",
+      "name": "python-dotenv",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "direct"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "python-dotenv"
+        }
+      ],
+      "purl": "pkg:pypi/python-dotenv@1.2.2",
+      "type": "library",
+      "version": "1.2.2"
+    },
+    {
+      "bom-ref": "pkg:pypi/pyyaml@6.0.3",
+      "name": "PyYAML",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "direct"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "pyyaml"
+        }
+      ],
+      "purl": "pkg:pypi/pyyaml@6.0.3",
+      "type": "library",
+      "version": "6.0.3"
+    },
+    {
+      "bom-ref": "pkg:pypi/regex@2026.5.9",
+      "name": "regex",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "regex"
+        }
+      ],
+      "purl": "pkg:pypi/regex@2026.5.9",
+      "type": "library",
+      "version": "2026.5.9"
+    },
+    {
+      "bom-ref": "pkg:pypi/rich@15.0.0",
+      "name": "rich",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "rich"
+        }
+      ],
+      "purl": "pkg:pypi/rich@15.0.0",
+      "type": "library",
+      "version": "15.0.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/safetensors@0.8.0",
+      "name": "safetensors",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "safetensors"
+        }
+      ],
+      "purl": "pkg:pypi/safetensors@0.8.0",
+      "type": "library",
+      "version": "0.8.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/scikit-learn@1.9.0",
+      "name": "scikit-learn",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "scikit-learn"
+        }
+      ],
+      "purl": "pkg:pypi/scikit-learn@1.9.0",
+      "type": "library",
+      "version": "1.9.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/scipy@1.17.0",
+      "name": "scipy",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "scipy"
+        }
+      ],
+      "purl": "pkg:pypi/scipy@1.17.0",
+      "type": "library",
+      "version": "1.17.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/sentence-transformers@5.5.1",
+      "name": "sentence-transformers",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "direct"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "sentence-transformers"
+        }
+      ],
+      "purl": "pkg:pypi/sentence-transformers@5.5.1",
+      "type": "library",
+      "version": "5.5.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/setuptools@81.0.0",
+      "name": "setuptools",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "setuptools"
+        }
+      ],
+      "purl": "pkg:pypi/setuptools@81.0.0",
+      "type": "library",
+      "version": "81.0.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/shellingham@1.5.4",
+      "name": "shellingham",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "shellingham"
+        }
+      ],
+      "purl": "pkg:pypi/shellingham@1.5.4",
+      "type": "library",
+      "version": "1.5.4"
+    },
+    {
+      "bom-ref": "pkg:pypi/sniffio@1.3.1",
+      "name": "sniffio",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "sniffio"
+        }
+      ],
+      "purl": "pkg:pypi/sniffio@1.3.1",
+      "type": "library",
+      "version": "1.3.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/starlette@1.2.1",
+      "name": "starlette",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "starlette"
+        }
+      ],
+      "purl": "pkg:pypi/starlette@1.2.1",
+      "type": "library",
+      "version": "1.2.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/sympy@1.14.0",
+      "name": "sympy",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "sympy"
+        }
+      ],
+      "purl": "pkg:pypi/sympy@1.14.0",
+      "type": "library",
+      "version": "1.14.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/threadpoolctl@3.6.0",
+      "name": "threadpoolctl",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "threadpoolctl"
+        }
+      ],
+      "purl": "pkg:pypi/threadpoolctl@3.6.0",
+      "type": "library",
+      "version": "3.6.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/tokenizers@0.22.2",
+      "name": "tokenizers",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "tokenizers"
+        }
+      ],
+      "purl": "pkg:pypi/tokenizers@0.22.2",
+      "type": "library",
+      "version": "0.22.2"
+    },
+    {
+      "bom-ref": "pkg:pypi/torch@2.12.0",
+      "name": "torch",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "torch"
+        }
+      ],
+      "purl": "pkg:pypi/torch@2.12.0",
+      "type": "library",
+      "version": "2.12.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/tqdm@4.67.2",
+      "name": "tqdm",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "tqdm"
+        }
+      ],
+      "purl": "pkg:pypi/tqdm@4.67.2",
+      "type": "library",
+      "version": "4.67.2"
+    },
+    {
+      "bom-ref": "pkg:pypi/transformers@5.10.2",
+      "name": "transformers",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "transformers"
+        }
+      ],
+      "purl": "pkg:pypi/transformers@5.10.2",
+      "type": "library",
+      "version": "5.10.2"
+    },
+    {
+      "bom-ref": "pkg:pypi/typer@0.25.1",
+      "name": "typer",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "typer"
+        }
+      ],
+      "purl": "pkg:pypi/typer@0.25.1",
+      "type": "library",
+      "version": "0.25.1"
+    },
+    {
+      "bom-ref": "pkg:pypi/typing-extensions@4.15.0",
+      "name": "typing_extensions",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "typing-extensions"
+        }
+      ],
+      "purl": "pkg:pypi/typing-extensions@4.15.0",
+      "type": "library",
+      "version": "4.15.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/typing-inspection@0.4.2",
+      "name": "typing-inspection",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "transitive"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "typing-inspection"
+        }
+      ],
+      "purl": "pkg:pypi/typing-inspection@0.4.2",
+      "type": "library",
+      "version": "0.4.2"
+    },
+    {
+      "bom-ref": "pkg:pypi/uvicorn@0.46.0",
+      "name": "uvicorn",
+      "properties": [
+        {
+          "name": "agentguard:dependency-type",
+          "value": "direct"
+        },
+        {
+          "name": "agentguard:canonical-name",
+          "value": "uvicorn"
+        }
+      ],
+      "purl": "pkg:pypi/uvicorn@0.46.0",
+      "type": "library",
+      "version": "0.46.0"
+    }
+  ],
+  "dependencies": [
+    {
+      "dependsOn": [
+        "pkg:pypi/fastapi@0.136.1",
+        "pkg:pypi/numpy@2.3.5",
+        "pkg:pypi/openai@2.41.0",
+        "pkg:pypi/pydantic@2.13.4",
+        "pkg:pypi/pyjwt@2.13.0",
+        "pkg:pypi/pytest-cov@7.1.0",
+        "pkg:pypi/pytest@9.0.3",
+        "pkg:pypi/python-dotenv@1.2.2",
+        "pkg:pypi/pyyaml@6.0.3",
+        "pkg:pypi/sentence-transformers@5.5.1",
+        "pkg:pypi/uvicorn@0.46.0"
+      ],
+      "ref": "pkg:generic/agentguard@local"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/annotated-doc@0.0.4"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/annotated-types@0.7.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/idna@3.11"
+      ],
+      "ref": "pkg:pypi/anyio@4.13.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/certifi@2025.11.12"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/pycparser@3.0"
+      ],
+      "ref": "pkg:pypi/cffi@2.0.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/colorama@0.4.6"
+      ],
+      "ref": "pkg:pypi/click@8.4.1"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/colorama@0.4.6"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/coverage@7.14.1"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/cffi@2.0.0"
+      ],
+      "ref": "pkg:pypi/cryptography@49.0.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/distro@1.9.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/annotated-doc@0.0.4",
+        "pkg:pypi/pydantic@2.13.4",
+        "pkg:pypi/starlette@1.2.1",
+        "pkg:pypi/typing-extensions@4.15.0",
+        "pkg:pypi/typing-inspection@0.4.2"
+      ],
+      "ref": "pkg:pypi/fastapi@0.136.1"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/filelock@3.29.1"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/fsspec@2026.4.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/h11@0.16.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/hf-xet@1.5.1"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/certifi@2025.11.12",
+        "pkg:pypi/h11@0.16.0"
+      ],
+      "ref": "pkg:pypi/httpcore@1.0.9"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/anyio@4.13.0",
+        "pkg:pypi/certifi@2025.11.12",
+        "pkg:pypi/httpcore@1.0.9",
+        "pkg:pypi/idna@3.11"
+      ],
+      "ref": "pkg:pypi/httpx@0.28.1"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/click@8.4.1",
+        "pkg:pypi/filelock@3.29.1",
+        "pkg:pypi/fsspec@2026.4.0",
+        "pkg:pypi/hf-xet@1.5.1",
+        "pkg:pypi/httpx@0.28.1",
+        "pkg:pypi/packaging@25.0",
+        "pkg:pypi/pyyaml@6.0.3",
+        "pkg:pypi/tqdm@4.67.2",
+        "pkg:pypi/typer@0.25.1",
+        "pkg:pypi/typing-extensions@4.15.0"
+      ],
+      "ref": "pkg:pypi/huggingface-hub@1.18.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/idna@3.11"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/iniconfig@2.3.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/markupsafe@3.0.3"
+      ],
+      "ref": "pkg:pypi/jinja2@3.1.6"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/jiter@0.15.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/joblib@1.5.3"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/mdurl@0.1.2"
+      ],
+      "ref": "pkg:pypi/markdown-it-py@4.2.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/markupsafe@3.0.3"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/mdurl@0.1.2"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/mpmath@1.3.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/narwhals@2.22.1"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/networkx@3.6.1"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/numpy@2.3.5"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/anyio@4.13.0",
+        "pkg:pypi/distro@1.9.0",
+        "pkg:pypi/httpx@0.28.1",
+        "pkg:pypi/jiter@0.15.0",
+        "pkg:pypi/pydantic@2.13.4",
+        "pkg:pypi/sniffio@1.3.1",
+        "pkg:pypi/tqdm@4.67.2",
+        "pkg:pypi/typing-extensions@4.15.0"
+      ],
+      "ref": "pkg:pypi/openai@2.41.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/packaging@25.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/pluggy@1.6.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/pycparser@3.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/annotated-types@0.7.0",
+        "pkg:pypi/pydantic-core@2.46.4",
+        "pkg:pypi/typing-extensions@4.15.0",
+        "pkg:pypi/typing-inspection@0.4.2"
+      ],
+      "ref": "pkg:pypi/pydantic@2.13.4"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/typing-extensions@4.15.0"
+      ],
+      "ref": "pkg:pypi/pydantic-core@2.46.4"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/pygments@2.20.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/cryptography@49.0.0"
+      ],
+      "ref": "pkg:pypi/pyjwt@2.13.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/colorama@0.4.6",
+        "pkg:pypi/iniconfig@2.3.0",
+        "pkg:pypi/packaging@25.0",
+        "pkg:pypi/pluggy@1.6.0",
+        "pkg:pypi/pygments@2.20.0"
+      ],
+      "ref": "pkg:pypi/pytest@9.0.3"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/coverage@7.14.1",
+        "pkg:pypi/pluggy@1.6.0",
+        "pkg:pypi/pytest@9.0.3"
+      ],
+      "ref": "pkg:pypi/pytest-cov@7.1.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/python-dotenv@1.2.2"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/pyyaml@6.0.3"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/regex@2026.5.9"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/markdown-it-py@4.2.0",
+        "pkg:pypi/pygments@2.20.0"
+      ],
+      "ref": "pkg:pypi/rich@15.0.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/safetensors@0.8.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/joblib@1.5.3",
+        "pkg:pypi/narwhals@2.22.1",
+        "pkg:pypi/numpy@2.3.5",
+        "pkg:pypi/scipy@1.17.0",
+        "pkg:pypi/threadpoolctl@3.6.0"
+      ],
+      "ref": "pkg:pypi/scikit-learn@1.9.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/numpy@2.3.5"
+      ],
+      "ref": "pkg:pypi/scipy@1.17.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/huggingface-hub@1.18.0",
+        "pkg:pypi/numpy@2.3.5",
+        "pkg:pypi/scikit-learn@1.9.0",
+        "pkg:pypi/scipy@1.17.0",
+        "pkg:pypi/torch@2.12.0",
+        "pkg:pypi/tqdm@4.67.2",
+        "pkg:pypi/transformers@5.10.2",
+        "pkg:pypi/typing-extensions@4.15.0"
+      ],
+      "ref": "pkg:pypi/sentence-transformers@5.5.1"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/setuptools@81.0.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/shellingham@1.5.4"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/sniffio@1.3.1"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/anyio@4.13.0"
+      ],
+      "ref": "pkg:pypi/starlette@1.2.1"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/mpmath@1.3.0"
+      ],
+      "ref": "pkg:pypi/sympy@1.14.0"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/threadpoolctl@3.6.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/huggingface-hub@1.18.0"
+      ],
+      "ref": "pkg:pypi/tokenizers@0.22.2"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/filelock@3.29.1",
+        "pkg:pypi/fsspec@2026.4.0",
+        "pkg:pypi/jinja2@3.1.6",
+        "pkg:pypi/networkx@3.6.1",
+        "pkg:pypi/setuptools@81.0.0",
+        "pkg:pypi/sympy@1.14.0",
+        "pkg:pypi/typing-extensions@4.15.0"
+      ],
+      "ref": "pkg:pypi/torch@2.12.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/colorama@0.4.6"
+      ],
+      "ref": "pkg:pypi/tqdm@4.67.2"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/huggingface-hub@1.18.0",
+        "pkg:pypi/numpy@2.3.5",
+        "pkg:pypi/packaging@25.0",
+        "pkg:pypi/pyyaml@6.0.3",
+        "pkg:pypi/regex@2026.5.9",
+        "pkg:pypi/safetensors@0.8.0",
+        "pkg:pypi/tokenizers@0.22.2",
+        "pkg:pypi/tqdm@4.67.2",
+        "pkg:pypi/typer@0.25.1"
+      ],
+      "ref": "pkg:pypi/transformers@5.10.2"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/annotated-doc@0.0.4",
+        "pkg:pypi/click@8.4.1",
+        "pkg:pypi/rich@15.0.0",
+        "pkg:pypi/shellingham@1.5.4"
+      ],
+      "ref": "pkg:pypi/typer@0.25.1"
+    },
+    {
+      "dependsOn": [],
+      "ref": "pkg:pypi/typing-extensions@4.15.0"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/typing-extensions@4.15.0"
+      ],
+      "ref": "pkg:pypi/typing-inspection@0.4.2"
+    },
+    {
+      "dependsOn": [
+        "pkg:pypi/click@8.4.1",
+        "pkg:pypi/h11@0.16.0"
+      ],
+      "ref": "pkg:pypi/uvicorn@0.46.0"
+    }
+  ],
+  "metadata": {
+    "component": {
+      "bom-ref": "pkg:generic/agentguard@local",
+      "name": "AgentGuard",
+      "type": "application",
+      "version": "local"
+    },
+    "properties": [
+      {
+        "name": "agentguard:requirements-lock-sha256",
+        "value": "b12c3ac0c569c45116deaa3c7666e19b24f39a033646c80e673d8656d9c15e05"
+      },
+      {
+        "name": "agentguard:python-version",
+        "value": "3.13.7"
+      },
+      {
+        "name": "agentguard:platform",
+        "value": "win32"
+      }
+    ]
+  },
+  "serialNumber": "urn:uuid:1355607c-d968-597c-9535-9b36373e3ad5",
+  "specVersion": "1.5",
+  "version": 1
+}

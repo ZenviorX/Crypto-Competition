@@ -1,0 +1,50 @@
+[
+  {
+    "id": "case_001_normal_public_read",
+    "scenario": "normal_public_read",
+    "expected_oauth_only": "allow",
+    "expected_agentguard": "allow"
+  },
+  {
+    "id": "case_002_missing_scope_email",
+    "scenario": "scope_missing_email",
+    "expected_oauth_only": "deny",
+    "expected_agentguard": "deny"
+  },
+  {
+    "id": "case_003_scope_enough_but_sandbox_denies_email",
+    "scenario": "scope_enough_but_sandbox_denies",
+    "expected_oauth_only": "allow",
+    "expected_agentguard": "deny"
+  },
+  {
+    "id": "case_004_scope_enough_but_no_shell_sandbox_denies",
+    "scenario": "scope_enough_but_no_shell_sandbox_denies",
+    "expected_oauth_only": "allow",
+    "expected_agentguard": "deny"
+  },
+  {
+    "id": "case_005_scope_enough_but_readonly_sandbox_denies",
+    "scenario": "scope_enough_but_readonly_sandbox_denies",
+    "expected_oauth_only": "allow",
+    "expected_agentguard": "deny"
+  },
+  {
+    "id": "case_006_scope_enough_but_strict_sandbox_denies_http",
+    "scenario": "scope_enough_but_strict_sandbox_denies_http",
+    "expected_oauth_only": "allow",
+    "expected_agentguard": "deny"
+  },
+  {
+    "id": "case_007_scope_enough_but_task_boundary_denies",
+    "scenario": "scope_enough_but_task_boundary_denies",
+    "expected_oauth_only": "allow",
+    "expected_agentguard": "deny"
+  },
+  {
+    "id": "case_008_scope_enough_but_untrusted_input_drives_email_denies",
+    "scenario": "scope_enough_but_untrusted_input_drives_email_denies",
+    "expected_oauth_only": "allow",
+    "expected_agentguard": "deny"
+  }
+]
