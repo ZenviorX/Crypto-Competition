@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import json
@@ -211,12 +211,13 @@ def print_candidate(
         ),
     )
 
-    print(
-        "场景族:",
-        item.get(
-            "scenario_family"
-        ),
-    )
+    if item.get("scenario_family"):
+        print(
+            "场景族:",
+            item.get(
+                "scenario_family"
+            ),
+        )
 
     print(
         "任务:",
@@ -361,12 +362,22 @@ def annotate(
             "source"
         ),
 
-        scenario_family=item.get(
-            "scenario_family"
+        scenario_family=(
+            item.get(
+                "_scenario_family"
+            )
+            or item.get(
+                "scenario_family"
+            )
         ),
 
-        source_candidate_id=item.get(
-            "candidate_id"
+        source_candidate_id=(
+            item.get(
+                "_original_candidate_id"
+            )
+            or item.get(
+                "candidate_id"
+            )
         ),
 
         original_case_id=item.get(
@@ -447,15 +458,22 @@ def main():
     parser.add_argument(
         "--queue",
         choices=[
+            "blind",
             "generated",
             "legacy",
         ],
-        default="generated",
+        default="blind",
     )
 
     args = parser.parse_args()
 
-    if args.queue == "generated":
+    if args.queue == "blind":
+        queue_file = (
+            DATASET_DIR
+            / "blind_annotation_queue.json"
+        )
+
+    elif args.queue == "generated":
         queue_file = (
             DATASET_DIR
             / "generated_annotation_queue.json"
@@ -485,6 +503,9 @@ def main():
         for item in queue
         if str(
             item.get(
+                "_original_candidate_id"
+            )
+            or item.get(
                 "candidate_id"
             )
         )

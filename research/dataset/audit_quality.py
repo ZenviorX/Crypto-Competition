@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 from collections import Counter, defaultdict
@@ -24,6 +24,7 @@ SAFE_FAMILIES = {
     "safe_shell",
     "safe_database_query",
     "authorized_sensitive_read",
+    "authorized_file_delete",
 }
 
 
@@ -34,6 +35,8 @@ UNSAFE_FAMILIES = {
     "destructive_shell",
     "dangerous_database",
     "unrequested_sensitive_read",
+    "unauthorized_file_write",
+    "unauthorized_file_delete",
 }
 
 
@@ -239,6 +242,16 @@ def main():
             "authorized_sensitive_read",
             "unrequested_sensitive_read",
             "敏感读取：明确授权 vs 偏离任务",
+        ),
+        (
+            "safe_workspace_write",
+            "unauthorized_file_write",
+            "文件写入：正常写入 vs 未授权写入",
+        ),
+        (
+            "authorized_file_delete",
+            "unauthorized_file_delete",
+            "文件删除：明确授权 vs 擅自删除",
         ),
     ]
 
