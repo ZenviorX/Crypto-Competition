@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from typing import Any, Dict, List, Tuple
 
@@ -654,5 +654,190 @@ def extract_risk_features(
         features[
             f"history_semantic_{label}"
         ] = float(score)
+
+
+    # =========================================================
+    # 12. 用户任务意图  实际工具调用
+    #
+    # 这些特征不判断危险不危险，只描述：
+    # 当前调用是否和用户原始任务明显一致或冲突。
+    # =========================================================
+
+    task_text = str(
+        request.original_input or ""
+    ).strip().lower()
+
+    normalized_task = (
+        task_text
+        .replace("\\", "/")
+    )
+
+    # ---------------------------------------------------------
+    # 用户任务是否明确提到了当前资源
+    # ---------------------------------------------------------
+    features[
+        "task_mentions_resource"
+    ] = 0.0
+
+    if path:
+        normalized_path = (
+            str(path)
+            .strip()
+            .lower()
+            .replace("\\", "/")
+        )
+
+        features[
+            "task_mentions_resource"
+        ] = _bool(
+            normalized_path
+            in normalized_task
+        )
+
+    # ---------------------------------------------------------
+    # 用户任务是否明确提到了邮件接收者
+    # ---------------------------------------------------------
+    features[
+        "task_mentions_recipient"
+    ] = 0.0
+
+    if tool == "email.send":
+
+        recipient = str(
+            params.get(
+                "to",
+                "",
+            )
+        ).strip().lower()
+
+        if recipient:
+            features[
+                "task_mentions_recipient"
+            ] = _bool(
+                recipient
+                in normalized_task
+            )
+
+    # ---------------------------------------------------------
+    # 用户任务是否显式要求对应类型的动作
+    # ---------------------------------------------------------
+    action_keywords = {
+        "file.read": [
+            "读取",
+            "查看",
+            "阅读",
+            "打开",
+            "检查",
+        ],
+
+        "file.write": [
+            "保存",
+            "写入",
+            "记录",
+            "生成文件",
+        ],
+
+        "file.delete": [
+            "删除",
+            "移除",
+            "清理",
+        ],
+
+        "email.send": [
+            "发送",
+            "发邮件",
+            "邮件",
+            "转发",
+        ],
+
+        "shell.run": [
+            "执行命令",
+            "运行命令",
+            "shell",
+            "终端",
+            "命令行",
+        ],
+
+        "db.query": [
+            "查询数据库",
+            "查询",
+            "统计",
+            "数据库",
+        ],
+    }
+
+    tool_action_words = (
+        action_keywords.get(
+            tool,
+            [],
+        )
+    )
+
+    features[
+        "task_mentions_tool_action"
+    ] = _bool(
+        any(
+            word in task_text
+            for word
+            in tool_action_words
+        )
+    )
+
+    # ---------------------------------------------------------
+    # 用户任务是否明确禁止当前行为
+    # ---------------------------------------------------------
+    negative_patterns = {
+        "email.send": [
+            "不要发送",
+            "禁止发送",
+            "不要外发",
+            "禁止外发",
+            "不得发送",
+            "不得外发",
+        ],
+
+        "shell.run": [
+            "不要执行命令",
+            "禁止执行命令",
+            "不要运行命令",
+            "不得执行命令",
+        ],
+
+        "file.delete": [
+            "不要删除",
+            "禁止删除",
+            "不得删除",
+        ],
+
+        "file.write": [
+            "不要修改",
+            "不要写入",
+            "禁止修改",
+            "不得修改",
+        ],
+
+        "db.query": [
+            "不要修改数据库",
+            "禁止修改数据库",
+            "不得修改数据库",
+        ],
+    }
+
+    conflict_words = (
+        negative_patterns.get(
+            tool,
+            [],
+        )
+    )
+
+    features[
+        "task_explicitly_conflicts_with_tool"
+    ] = _bool(
+        any(
+            word in task_text
+            for word
+            in conflict_words
+        )
+    )
 
     return features
